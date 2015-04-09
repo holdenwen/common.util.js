@@ -5,7 +5,7 @@
 // 声明命名空间
 var COMMON = COMMON || {};
 
-// 命名空间函数
+// 声明命名空间函数
 COMMON.namespace = function(ns_string) {
     var parts = ns_string.split('.'),
         parent = COMMON,
@@ -24,10 +24,10 @@ COMMON.namespace = function(ns_string) {
     return parent;
 };
 
-//
+// 调用命名空间函数，设置新的命名空间
 COMMON.namespace('COMMON.UTIL');
 
-//
+// tab切换功能的实现
 COMMON.UTIL.tab = function(btnObj, conObj, params) {
     var btns = $(btnObj),
         btnCurrent,
@@ -108,9 +108,95 @@ COMMON.UTIL.tab = function(btnObj, conObj, params) {
     activeFun(index);
 };
 
+// 图片轮播功能
+COMMON.UTIL.scrollPics = function(opt) {
+    var settings = {
+            currentTarget: '',
+            wrap: '',
+            autoplay : true,
+            minNum: 1,
+            time: 5000,
+            tab: '',
+            index: 0
+            /*,
+            prevCallback: function() {},
+            nextCallback: function() {}
+            */
+        },
+        opt = opt || {};
+    settings = $.extend(settings, opt);
+    var $currentTarget = $(settings.currentTarget),
+        $wrap = $(settings.wrap),
+        ul = $wrap.find('ul'),
+        li_len = ul.find('li').length,
+        li_w = ul.find('li').width(),
+        left = $currentTarget.find('.prev'),
+        right = $currentTarget.find('.next'),
+        tab = $(settings.tab),
+        timer = null,
+        currentIndex = settings.index;
+    tab.eq(currentIndex).addClass('current');
+    ul.css('width', li_w*li_len);
+    if(li_len > settings.minNum){
+        right.click(function(){
+            settings.nextCallback();
+            currentIndex++;
+            if(currentIndex == li_len) {
+                currentIndex = 0;
+            }
+            tab.removeClass('current').eq(currentIndex).addClass('current');
+            ul.stop().animate({
+                "left": -(li_w*currentIndex)
+            },{
+                "duration": 1000,
+                "easing": "easeOutExpo"
+            });
+        });
+        left.click(function() {
+            currentIndex--;
+            if(currentIndex < 0){
+                currentIndex = li_len - 1;
+            }
+            tab.removeClass('current').eq(currentIndex).addClass('current');
+            ul.stop().animate({
+                "left": -(li_w*currentIndex)
+            },{
+                "duration": 1000,
+                "easing": "easeOutExpo"
+            });
+            settings.prevCallback();
+        });
+        tab.click(function(){
+            currentIndex = $(this).index(settings.tab);
+            tab.removeClass('current').eq(currentIndex).addClass('current');
+            ul.stop().animate({
+                "left": -(li_w*currentIndex)
+            },{
+                "duration": 1000,
+                "easing": "easeOutExpo"
+            });
+        });
+        if (settings.autoplay) {
+            timer = setInterval(function() {
+                right.trigger("click");
+            }, settings.time);
+            $wrap.mouseenter(function() {
+                clearInterval(timer);
+            });
+            $wrap.mouseleave(function() {
+                clearInterval(timer);
+                timer = setInterval(function() {
+                    right.trigger("click");
+                }, settings.time);
+            });
+        }
+    }
+}
 
 
 
+
+/*
 var com = {
     scrollPics : function(opt) {
         var settings = {
@@ -194,3 +280,4 @@ var com = {
         }
     }
 };
+    */
