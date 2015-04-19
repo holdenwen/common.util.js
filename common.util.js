@@ -131,7 +131,8 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
 
 // 图片轮播
 // 原命名为switch，由于switch是关键字，因此改成switchPics
-COMMON.UTIL.switchPics = function(option) {
+COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
+    /*
     var settings = {
             currentTarget: '',
             wrap: '',
@@ -140,12 +141,34 @@ COMMON.UTIL.switchPics = function(option) {
             time: 5000,
             tab: '',
             index: 0
-            /*,
-             prevCallback: function() {},
-             nextCallback: function() {}
-             */
+            //,
+            //prevCallback: function() {},
+            //nextCallback: function() {}
         },
-        settings = $.extend(settings, option || {});
+        settings = $.extend(settings, options || {});
+        */
+    var settings = {
+            direction: 'left',
+            autoPlay: true,
+            time: 5000,
+            currentIndex: 0
+        },
+        settings  = $.extend(settings, options || {});
+    var $container = $(container),
+        $contsWrap = $(contsWrap),
+        $btns = $(btnsObj),
+        $ul = $contsWrap.find('ul'),
+        liLength = $ul.find('li').length,
+        liMove = settings.direction === 'left' ? $ul.find('li').width() : $ul.find('li').height(),
+        ulDirection = settings.direction === 'left' ? 'width' : 'height',
+        $prev = $container.find('.prev'),
+        $next = $container.find('.next'),
+        direction = settings.direction,
+        autoPlay = settings.autoPlay,
+        time = settings.time,
+        currentIndex = settings.currentIndex,
+        timer = null;
+    /*
     var $currentTarget = $(settings.currentTarget),
         $wrap = $(settings.wrap),
         ul = $wrap.find('ul'),
@@ -156,11 +179,61 @@ COMMON.UTIL.switchPics = function(option) {
         tab = $(settings.tab),
         timer = null,
         currentIndex = settings.index;
-    tab.eq(currentIndex).addClass('current');
-    ul.css('width', li_w*li_len);
+        */
+    $btns.eq(currentIndex).addClass('current');
+    $ul.css(ulDirection, liLength * liMove);
+    if(liLength > 1) {
+        $next.click(function() {
+            currentIndex++;
+            currentIndex === liLength && (currentIndex = 0);  // 改写
+            $btns.removeClass('current').eq(currentIndex).addClass('current');
+            if(direction === 'left') {
+                $ul.stop().animate({'left': -liMove * currentIndex}, 300);
+            } else {
+                $ul.stop().animate({'top': -liMove * currentIndex}, 300);
+            }
+        });
+        $prev.click(function() {
+            currentIndex--;
+            currentIndex < 0 && (currentIndex = liLength - 1);  // 改写
+            $btns.removeClass('current').eq(currentIndex).addClass('current');
+            if(direction === 'left') {
+                $ul.stop().animate({'left': -liMove * currentIndex}, 300);
+            } else {
+                $ul.stop().animate({'top': -liMove * currentIndex}, 300);
+            }
+        });
+        $btns.click(function(){
+            currentIndex = $(this).index(btnsObj);
+            $btns.removeClass('current').eq(currentIndex).addClass('current');
+            if(direction === 'left') {
+                $ul.stop().animate({'left': -liMove * currentIndex}, 300);
+            } else {
+                $ul.stop().animate({'top': -liMove * currentIndex}, 300);
+            }
+        });
+        if(autoPlay) {
+            timer = setInterval(function() {
+                $next.trigger('click');
+            }, time);
+            $btns.mouseenter(function() {
+                clearInterval(timer);
+            });
+            $btns.mouseleave(function() {
+                clearInterval(timer);
+                timer = setInterval(function() {
+                    $next.trigger('click');
+                }, time);
+            });
+        }
+    }
+    // TODO 轮播基本完成
+    // tab.eq(currentIndex).addClass('current');
+    // ul.css('width', li_w*li_len);
+    /*
     if(li_len > settings.minNum){
         right.click(function(){
-            settings.nextCallback();
+            // settings.nextCallback();
             currentIndex++;
             if(currentIndex == li_len) {
                 currentIndex = 0;
@@ -185,7 +258,7 @@ COMMON.UTIL.switchPics = function(option) {
                 "duration": 1000,
                 "easing": "easeOutExpo"
             });
-            settings.prevCallback();
+            // settings.prevCallback();
         });
         tab.click(function(){
             currentIndex = $(this).index(settings.tab);
@@ -197,7 +270,7 @@ COMMON.UTIL.switchPics = function(option) {
                 "easing": "easeOutExpo"
             });
         });
-        if (settings.autoplay) {
+        if(settings.autoplay) {
             timer = setInterval(function() {
                 right.trigger("click");
             }, settings.time);
@@ -212,6 +285,7 @@ COMMON.UTIL.switchPics = function(option) {
             });
         }
     }
+    */
 };
 
 
