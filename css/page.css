@@ -1,0 +1,26 @@
+.clearfix{*zoom:1;}
+.clearfix:after{display:block; clear:both; height:0; content:"\0020"; visibility:hidden;}
+
+.wrap{position:relative; max-width:1920px; min-width:1000px; margin:0 auto; overflow:hidden; z-index:1;
+    font-family:'Microsoft Yahei'; font-size:12px;
+}
+
+/** tab切换 **/
+.section-tab{margin:0 auto; width:240px;}
+/* 标签 */
+.section-tab-btns{height:40px; background-color:#529eff;}
+.section-tab-btns a{float:left; width:60px; height:40px; line-height:40px; font-size:16px; text-align:center; color:#fff; cursor:default;}
+.section-tab-btns a:hover, .section-tab-btns a.current{color:#f00;}
+/* 内容 */
+.section-tab-conts{padding-bottom:15px; width:240px; background-color:#fffff0; overflow:hidden;}
+.section-tab-conts .tab-contsList{display:none;}
+.section-tab-conts .tab-contsList.current{display:block;}
+.section-tab-conts .tab-cont{margin:12px auto 0 auto; width:240px;}
+.section-tab-conts .tab-cont a{float:left; margin-right:10px; width:190px; font-size:14px; text-indent:20px; color:#677587;
+    text-decoration:none; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; white-space:nowrap;}
+.section-tab-conts .tab-cont a:hover{text-decoration:underline;}
+.section-tab-conts .tab-cont span{float:left; max-width:40px;}
+
+
+/**  **/
+
