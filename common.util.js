@@ -132,21 +132,6 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
 // 图片轮播
 // 原命名为switch，由于switch是关键字，因此改成switchPics
 COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
-    /*
-    var settings = {
-            currentTarget: '',
-            wrap: '',
-            autoplay : true,
-            minNum: 1,
-            time: 5000,
-            tab: '',
-            index: 0
-            //,
-            //prevCallback: function() {},
-            //nextCallback: function() {}
-        },
-        settings = $.extend(settings, options || {});
-        */
     var settings = {
             direction: 'left',
             autoPlay: true,
@@ -168,18 +153,6 @@ COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
         time = settings.time,
         currentIndex = settings.currentIndex,
         timer = null;
-    /*
-    var $currentTarget = $(settings.currentTarget),
-        $wrap = $(settings.wrap),
-        ul = $wrap.find('ul'),
-        li_len = ul.find('li').length,
-        li_w = ul.find('li').width(),
-        left = $currentTarget.find('.prev'),
-        right = $currentTarget.find('.next'),
-        tab = $(settings.tab),
-        timer = null,
-        currentIndex = settings.index;
-        */
     $btns.eq(currentIndex).addClass('current');
     $ul.css(ulDirection, liLength * liMove);
     if(liLength > 1) {
@@ -227,67 +200,52 @@ COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
             });
         }
     }
-    // TODO 轮播基本完成
-    // tab.eq(currentIndex).addClass('current');
-    // ul.css('width', li_w*li_len);
-    /*
-    if(li_len > settings.minNum){
-        right.click(function(){
-            // settings.nextCallback();
-            currentIndex++;
-            if(currentIndex == li_len) {
-                currentIndex = 0;
-            }
-            tab.removeClass('current').eq(currentIndex).addClass('current');
-            ul.stop().animate({
-                "left": -(li_w*currentIndex)
-            },{
-                "duration": 1000,
-                "easing": "easeOutExpo"
-            });
-        });
-        left.click(function() {
-            currentIndex--;
-            if(currentIndex < 0){
-                currentIndex = li_len - 1;
-            }
-            tab.removeClass('current').eq(currentIndex).addClass('current');
-            ul.stop().animate({
-                "left": -(li_w*currentIndex)
-            },{
-                "duration": 1000,
-                "easing": "easeOutExpo"
-            });
-            // settings.prevCallback();
-        });
-        tab.click(function(){
-            currentIndex = $(this).index(settings.tab);
-            tab.removeClass('current').eq(currentIndex).addClass('current');
-            ul.stop().animate({
-                "left": -(li_w*currentIndex)
-            },{
-                "duration": 1000,
-                "easing": "easeOutExpo"
-            });
-        });
-        if(settings.autoplay) {
-            timer = setInterval(function() {
-                right.trigger("click");
-            }, settings.time);
-            $wrap.mouseenter(function() {
-                clearInterval(timer);
-            });
-            $wrap.mouseleave(function() {
-                clearInterval(timer);
-                timer = setInterval(function() {
-                    right.trigger("click");
-                }, settings.time);
-            });
-        }
-    }
-    */
 };
 
+
+// 打开弹窗
+COMMON.UTIL.openPop = function(popObj, triggerBtn) {
+    // 初始化变量定义
+    var $pop = $(popObj),
+        $trigger = $(triggerBtn),
+        $overlay = $('.overlay');
+    // 触发按钮绑定
+    $trigger.bind('click', function() {
+        // 添加蒙版（判断）
+        // typeof $('.overlay').html() === 'undefined' && $body.append('<div class="overlay"></div>');
+        // 设置蒙版样式
+        $overlay.css({
+            'position': 'fixed',
+            'top': 0,
+            'left': 0,
+            'width': '100%',
+            'height': '100%',
+            'backgroundColor': '#000',
+            'opacity': '0.6',
+            'zIndex': 9999
+        }).show();
+        // 设置弹窗样式
+        $pop.css({
+            'marginTop': -$pop.height() / 2,
+            'marginLeft': -$pop.width() / 2,
+            'zIndex': 10000
+        }).show();
+    });
+};
+
+// 关闭弹窗
+COMMON.UTIL.closePop = function(popObj, triggerBtn) {
+    // 初始化变量定义
+    var $pop = $(popObj),
+        $overlay = $('.overlay'),
+        $trigger = $(triggerBtn);
+    // 触发按钮绑定
+    $trigger.bind('click', function() {
+        $pop.hide();
+        $overlay.hide();
+        console.log($overlay.html());
+    });
+};
 
 
 
