@@ -64,3 +64,8 @@
 
 
 
+/** marquee走马灯 **/
+.section-marquee{width:600px; height:200px;}
+.section-marquee-contsList{position:absolute;}
+.section-marquee-contsList p{font-size:14px; color:#361400; line-height:200%;}
+

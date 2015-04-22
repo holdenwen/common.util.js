@@ -13,5 +13,6 @@ $(function() {
     COMMON.UTIL.switchPics('.section-switch', '.section-switch-conts', '.section-switch-btns a');
     COMMON.UTIL.openPop('.pop', '.section-pop a');
     COMMON.UTIL.closePop('.pop', '.pop .pop-close');
+    COMMON.UTIL.marquee('.section-marquee-contsList');
 });
 

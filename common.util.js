@@ -243,8 +243,25 @@ COMMON.UTIL.closePop = function(popObj, triggerBtn) {
     $trigger.bind('click', function() {
         $pop.hide();
         $overlay.hide();
-        console.log($overlay.html());
     });
+};
+
+
+
+// 走马灯效果
+COMMON.UTIL.marquee = function(contObj, options) {
+    var settings = {
+            direction: 'top'
+        },
+        settings = $.extend(settings, options || {});
+    var $cont = $(contObj),
+        contMove = settings.direction === 'top' || settings.direction === 'bottom' ? $cont.width() : $cont.height();
+    // if(settings.direction === 'top')
+    $cont.css('position', 'absolute')
+        .animate({'top': -(contMove+contMove%200)},10000);
+
+
+    // console.log(contMove)
 };
 
 
