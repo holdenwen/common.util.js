@@ -69,3 +69,13 @@
 .section-marquee-contsList{position:absolute;}
 .section-marquee-contsList p{font-size:14px; color:#361400; line-height:200%;}
 
+
+/** video **/
+.section-video, .section-video-cont{width:800px; height:450px;}
+
+
+
+/** flash **/
+.section-flash{width:290px; height:130px;}
+.section-flash-cont{width:290px; height:130px;}
+

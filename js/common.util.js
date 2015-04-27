@@ -259,10 +259,101 @@ COMMON.UTIL.marquee = function(contObj, options) {
     // if(settings.direction === 'top')
     $cont.css('position', 'absolute')
         .animate({'top': -(contMove+contMove%200)},10000);
-
+    // TODO 未写完
 
     // console.log(contMove)
 };
+
+
+// 视频播放
+COMMON.UTIL.video = function(videoWrapper, options) {
+    var settings = {
+            f4v: '',
+            mp4: '',
+            width: '320',
+            height: '180',
+            wmode: 'opaque',
+            autoPlay: false
+        },
+        settings = $.extend(settings, options || {});
+    var $videoWrapper = $(videoWrapper),
+        f4v = settings.f4v,
+        mp4 = settings.mp4,
+        width = settings.width,
+        height = settings.height,
+        wmode = settings.wmode,
+        autoPlay = settings.autoPlay;
+    if($.flash.available) {
+        $videoWrapper.flash({
+            // swf: 'swf/player.swf',  //设置flash播放器
+            // TODO flash播放器地址（绝对？相对？）
+            swf: 'http://res.nie.netease.com/comm/js/nie/util/player.swf',  //设置flash播放器
+            width: width,
+            height: height,
+            allowFullScreen: true,
+            allowscriptaccess: 'always',
+            bgcolor: '000000',
+            wmode: wmode,
+            flashvars: {
+                width: width,
+                heigth: height,
+                movieUrl: f4v || mp4 || '',  //f4v和mp4的选择
+                videoWidth: width,
+                videoHeight: height,
+                autoPlay: autoPlay,
+                volume: 0.8,
+                loopTimes: 0,
+                bufferTime: 5,
+                videoIndex: 1,
+                allowFullScreen: true
+            }
+        });
+    }
+};
+// http://res.nie.netease.com/comm/js/nie/util/player.swf
+
+
+// flash播放
+COMMON.UTIL.flash = function(flashWrapper, options) {
+    var settings = {
+            swf: '',
+            wmode: 'transparent',
+            width: 320,
+            height: 180
+        },
+        settings = $.extend(settings, options || {});
+    var $flashWrapper = $(flashWrapper),
+        swf = settings.swf,
+        wmode = settings.wmode,
+        width = settings.width,
+        height = settings.height;
+    // 判断flash可用
+    if($.flash.available) {
+        $flashWrapper.flash({
+            swf: swf,
+            wmode: wmode,
+            width: width,
+            height: height
+        });
+    }
+};
+
+// http://res.xy2.netease.com/gw/15v1/img/290_130_29b5dc2.swf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
