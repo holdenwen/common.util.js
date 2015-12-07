@@ -1,8 +1,14 @@
 /**
- * Created by TimWen on 15/3/21.
+ * 网页常用功能工具库
  * @author 温昊天
- *
- *
+ * @version 1.0.1 2015-06-01
+ * @COMMON.UTIL.tab -轮播模块（tab切换功能）
+ * @COMMON.UTIL.switchPics -轮播模块（switch切换功能）
+ * @COMMON.UTIL.openPop -弹窗模块（打开弹窗功能）
+ * @COMMON.UTIL.closePop -弹窗模块（关闭弹窗功能）
+ * @COMMON.UTIL.marquee -走马灯模块（走马灯滚屏功能）
+ * @COMMON.UTIL.video -视频模块（视频播放功能）
+ * @COMMON.UTIL.flash -flash模块（flash播放功能）
  *
  */
 
@@ -33,11 +39,11 @@ COMMON.namespace('COMMON.UTIL');
 
 /**
  * tab切换
- * @param btnsObj
- * @param contsObj
+ * @param btnsWrapper
+ * @param contsWrapper
  * @param options
  */
-COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
+COMMON.UTIL.tab = function(btnsWrapper, contsWrapper, options) {
     // 默认参数
     var settings = {
             time: 100,
@@ -49,7 +55,7 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
         settings = $.extend(settings, options || {});
     // 变量声明
     var _p = {},
-        btns = $(btnsObj),
+        btns = $(btnsWrapper),
         btnCurrent,
         conts,
         contCurrent,
@@ -62,15 +68,15 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
         event = settings.event,
         activeClass = settings.activeClass;
     //
-    if(typeof contsObj !== 'string') {
+    if(typeof contsWrapper !== 'string') {
         conts = [], contCurrent = [];
-        $.each(contsObj, function () {
+        $.each(contsWrapper, function () {
             conts.push($(this.toString()));
             contCurrent.push({});
         });
         contCurrent = [];
     } else {
-        conts = $(contsObj);
+        conts = $(contsWrapper);
         contCurrent = {};
     }
     $.each(btns, function (i) {
@@ -89,7 +95,6 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
                         currentIndex = index;
                         _p.activeBtn(btn);
                         _p.activeConts(index);
-                        // _p.activeFun(index);
                     }
                 }, time);
             })();
@@ -105,7 +110,7 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
         $(btnObj).addClass(activeClass);
     };
     _p.activeConts = function(num) {
-        if(typeof contsObj !== 'string') {
+        if(typeof contsWrapper !== 'string') {
             $.each(conts, function (i) {
                 $(contCurrent[i]).removeClass(activeClass);
                 contCurrent[i] = this[num];
@@ -117,31 +122,27 @@ COMMON.UTIL.tab = function(btnsObj, contsObj, options) {
             $(conts[num]).addClass(activeClass);
         }
     };
-    /*
-     _p.activeFun = function (num) {
-     $.isFunction(fn) && fn(num);
-     };
-     */
     // 私有函数调用
     _p.activeBtn(btns[index]);
     _p.activeConts(index);
-    // _p.activeFun(index);
 };
 
 
 // 图片轮播
 // 原命名为switch，由于switch是关键字，因此改成switchPics
-COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
+COMMON.UTIL.switchPics = function(container, contsWrapper, btnsWrapper, options) {
+    // 默认参数
     var settings = {
             direction: 'left',
             autoPlay: true,
             time: 5000,
             currentIndex: 0
         },
+        // 新参数继承
         settings  = $.extend(settings, options || {});
     var $container = $(container),
-        $contsWrap = $(contsWrap),
-        $btns = $(btnsObj),
+        $contsWrap = $(contsWrapper),
+        $btns = $(btnsWrapper),
         $ul = $contsWrap.find('ul'),
         liLength = $ul.find('li').length,
         liMove = settings.direction === 'left' ? $ul.find('li').width() : $ul.find('li').height(),
@@ -177,7 +178,7 @@ COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
             }
         });
         $btns.click(function(){
-            currentIndex = $(this).index(btnsObj);
+            currentIndex = $(this).index(btnsWrapper);
             $btns.removeClass('current').eq(currentIndex).addClass('current');
             if(direction === 'left') {
                 $ul.stop().animate({'left': -liMove * currentIndex}, 300);
@@ -204,15 +205,13 @@ COMMON.UTIL.switchPics = function(container, contsWrap, btnsObj, options) {
 
 
 // 打开弹窗
-COMMON.UTIL.openPop = function(popObj, triggerBtn) {
+COMMON.UTIL.openPop = function(popWrapper, triggerBtn) {
     // 初始化变量定义
-    var $pop = $(popObj),
+    var $pop = $(popWrapper),
         $trigger = $(triggerBtn),
         $overlay = $('.overlay');
     // 触发按钮绑定
     $trigger.bind('click', function() {
-        // 添加蒙版（判断）
-        // typeof $('.overlay').html() === 'undefined' && $body.append('<div class="overlay"></div>');
         // 设置蒙版样式
         $overlay.css({
             'position': 'fixed',
@@ -234,9 +233,9 @@ COMMON.UTIL.openPop = function(popObj, triggerBtn) {
 };
 
 // 关闭弹窗
-COMMON.UTIL.closePop = function(popObj, triggerBtn) {
+COMMON.UTIL.closePop = function(popWrapper, triggerBtn) {
     // 初始化变量定义
-    var $pop = $(popObj),
+    var $pop = $(popWrapper),
         $overlay = $('.overlay'),
         $trigger = $(triggerBtn);
     // 触发按钮绑定
@@ -247,87 +246,74 @@ COMMON.UTIL.closePop = function(popObj, triggerBtn) {
 };
 
 
-
-// 走马灯效果
-COMMON.UTIL.marquee = function(contObj, options) {
+// 走马灯滚屏效果
+COMMON.UTIL.marquee = function(marqueeWrapper, options) {
+    // 默认参数
     var settings = {
-            direction: 'top'
+            direction: 'up',
+            duration: 5000
         },
+        // 新参数继承
         settings = $.extend(settings, options || {});
-    var $cont = $(contObj),
-        contMove = settings.direction === 'top' || settings.direction === 'bottom' ? $cont.width() : $cont.height();
-    // if(settings.direction === 'top')
-    $cont.css('position', 'absolute')
-        .animate({'top': -(contMove+contMove%200)},10000);
-    // TODO 未写完
-
-    // console.log(contMove)
+    var $mq = $(marqueeWrapper),
+        direction = settings.direction,
+        duration = settings.duration;
+    $mq.marquee({
+        direction: direction,
+        duration: duration
+    });
 };
 
 
 // 视频播放
 COMMON.UTIL.video = function(videoWrapper, options) {
+    // 默认参数
     var settings = {
             f4v: '',
             mp4: '',
             width: '320',
             height: '180',
-            wmode: 'opaque',
             autoPlay: false
         },
+        // 新参数继承
         settings = $.extend(settings, options || {});
-    var $videoWrapper = $(videoWrapper),
+    // 初始化变量
+    var $vedio = $(videoWrapper),
         f4v = settings.f4v,
         mp4 = settings.mp4,
         width = settings.width,
         height = settings.height,
-        wmode = settings.wmode,
-        autoPlay = settings.autoPlay;
-    if($.flash.available) {
-        $videoWrapper.flash({
-            // swf: 'swf/player.swf',  //设置flash播放器
-            // TODO flash播放器地址（绝对？相对？）
-            swf: 'http://res.nie.netease.com/comm/js/nie/util/player.swf',  //设置flash播放器
-            width: width,
-            height: height,
-            allowFullScreen: true,
-            allowscriptaccess: 'always',
-            bgcolor: '000000',
-            wmode: wmode,
-            flashvars: {
-                width: width,
-                heigth: height,
-                movieUrl: f4v || mp4 || '',  //f4v和mp4的选择
-                videoWidth: width,
-                videoHeight: height,
-                autoPlay: autoPlay,
-                volume: 0.8,
-                loopTimes: 0,
-                bufferTime: 5,
-                videoIndex: 1,
-                allowFullScreen: true
-            }
-        });
-    }
+        autoplay = settings.autoPlay;
+    // 视频设置
+    $vedio.attr({
+        width: width,
+        height: height,
+        src: mp4 || f4v || '',
+        autoplay: autoplay,
+        controls: true
+    });
+
 };
-// http://res.nie.netease.com/comm/js/nie/util/player.swf
+
 
 
 // flash播放
 COMMON.UTIL.flash = function(flashWrapper, options) {
+    // 默认参数
     var settings = {
             swf: '',
             wmode: 'transparent',
             width: 320,
             height: 180
         },
+        // 新参数继承
         settings = $.extend(settings, options || {});
     var $flashWrapper = $(flashWrapper),
         swf = settings.swf,
         wmode = settings.wmode,
         width = settings.width,
         height = settings.height;
-    // 判断flash可用
+    // 判断flash是否可用
     if($.flash.available) {
         $flashWrapper.flash({
             swf: swf,
@@ -337,306 +323,3 @@ COMMON.UTIL.flash = function(flashWrapper, options) {
         });
     }
 };
-
-// http://res.xy2.netease.com/gw/15v1/img/290_130_29b5dc2.swf
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 闭包写法，有问题
-/*
-COMMON.UTIL.carousel = (function() {
-    var _e = {}, _p = {};
-    _e.t = function(a, b) {
-        var _p = {};
-
-        _p.f = function(a, b) {
-            console.log(a + b);
-        }
-        _p.f(a, b);
-    };
-
-    _e.tab = function(btnObj, contObj, params) {
-        // console.log(btnObj+contObj)
-        var _p = {};
-        // 映射函数（赋值使用）
-        _p.map = function(attribute, value) {
-            return (typeof params !== 'undefine' && typeof params[attribute] !== 'undefine') ? params[attribute] : value;
-        };
-        _p.activeBtn = function(btnObj) {
-            $(btnCurrent).removeClass(activeClass);
-            btnCurrent = btnObj;
-            $(btnObj).addClass(activeClass);
-        };
-        _p.activeConts = function(num) {
-            if(typeof contObj !== 'string') {
-                $.each(conts, function (i) {
-                    $(contCurrent[i]).removeClass(activeClass);
-                    contCurrent[i] = this[num];
-                    $(this[num]).addClass(activeClass);
-                });
-            } else {
-                if(contCurrent) {
-                    $(contCurrent).removeClass(activeClass);
-                }
-                contCurrent = conts[num];
-                $(conts[num]).addClass(activeClass);
-            }
-        };
-        _p.activeFun = function(num) {
-            if ($.isFunction(fn)) {
-                fn(num);
-            }
-        };
-
-        var btns = $(btnObj),
-            btnCurrent,
-            contCurrent,
-            conts,
-            currentIndex,
-            overStatus,
-            timer,
-            trigger,
-            time = _p.map('time', 100),
-            index = _p.map('index', 0),
-            event = _p.map('event', 'hover'),
-            activeClass = _p.map('activeClass', 'class');
-        if(typeof contObj !== 'string') {
-            conts = [], contCurrent = [];
-            $.each(contObj, function () {
-                conts.push($(this.toString()));
-                contCurrent.push({});
-            });
-            contCurrent = [];
-        } else {
-            conts = $(contObj);
-            contCurrent = {};
-        }
-        $.each(btns, function (i) {
-            // 判断标签触发的事件类型
-            if(event === 'hover') {
-                trigger = 'mouseenter';
-            } else if(event === 'click') {
-                trigger = 'click';
-            }
-            $(this).bind(trigger, {'i': i, 'o': btns[i]}, function(e) {
-                overStatus = true;
-                (function() {
-                    var btn = e.data.o,
-                        index = e.data.i;
-                    timer = setTimeout(function(o) {
-                        if(overStatus && currentIndex !== index) {
-                            currentIndex = index;
-                            _p.activeBtn(btn);
-                            _p.activeConts(index);
-                            _p.activeFun(index);
-                        }
-                    }, time);
-                })();
-            }).bind('mouseleave', {'i': i}, function(e) {
-                clearTimeout(timer);
-                overStatus = false;
-            });
-        });
-        _p.activeBtn(btns[index]);
-        _p.activeConts(index);
-        _p.activeFun(index);
-    };
-    return _e;
-})();
-*/
-
-
-
-/*
-COMMON.UTIL.tab = function(btnObj, conObj, params) {
-    var btns = $(btnObj),
-        btnCurrent,
-        conCurrent,
-        cons,
-        currentIndex,
-        overStatus,
-        timer,
-        trigger,
-        time = chk('time', 100),
-        index = chk('index', 0),
-        event = chk('event', 'hover'),
-        activeClass = chk('activeClass', 'current');
-    function chk(attribute, value) {
-        return (typeof params !== 'undefined' && typeof params[attribute] !== 'undefined') ? params[attribute] : value;
-    }
-    function activeBtn(btnObj) {
-        $(btnCurrent).removeClass(activeClass);
-        btnCurrent = btnObj;
-        $(btnObj).addClass(activeClass);
-    }
-    function activeCons(num) {
-        if(typeof conObj !== 'string') {
-            $.each(cons, function (i) {
-                $(conCurrent[i]).removeClass(activeClass);
-                conCurrent[i] = this[num];
-                $(this[num]).addClass(activeClass);
-            });
-        } else {
-            if(conCurrent) $(conCurrent).removeClass(activeClass);
-            conCurrent = cons[num];
-            $(cons[num]).addClass(activeClass);
-        }
-    }
-    function activeFun(num) {
-        if ($.isFunction(fn)) {
-            fn(num);
-        }
-    }
-    if(typeof conObj !== 'string') {
-        cons = [], conCurrent = [];
-        $.each(conObj, function () {
-            cons.push($(this.toString()));
-            conCurrent.push({});
-        });
-        conCurrent = [];
-    } else {
-        cons = $(conObj);
-        conCurrent = {};
-    }
-    $.each(btns, function (i) {
-        if(event === 'hover') {
-            trigger = 'mouseenter';
-        } else if(event === 'click') {
-            trigger = 'click';
-        }
-        $(this).bind(trigger, {'i': i, 'o': btns[i]}, function(e) {
-            overStatus = true;
-            (function() {
-                var btn = e.data.o,
-                    index = e.data.i;
-                timer = setTimeout(function(o) {
-                    if (overStatus && currentIndex != index) {
-                        currentIndex = index;
-                        activeBtn(btn);
-                        activeCons(index);
-                        activeFun(index);
-                    }
-                }, time);
-            })();
-        }).bind('mouseleave', {"i": i}, function (e) {
-            clearTimeout(timer);
-            overStatus = false;
-        });
-    });
-    activeBtn(btns[index]);
-    activeCons(index);
-    activeFun(index);
-};
-*/
-
-
-
-
-
-
-
-/*
-var com = {
-    scrollPics : function(opt) {
-        var settings = {
-                currentTarget: '',
-                wrap: '',
-                autoplay : true,
-                minNum: 1,
-                time: 5000,
-                tab: '',
-                index: 0,
-                prevCallback: function() {},
-                nextCallback: function() {}
-            },
-            opt = opt || {};
-        settings = $.extend(settings, opt);
-        var $currentTarget = $(settings.currentTarget),
-            $wrap = $(settings.wrap),
-            ul = $wrap.find("ul"),
-            li_len = ul.find("li").length,
-            li_w = ul.find("li").width(),
-            left = $currentTarget.find(".prev"),
-            right = $currentTarget.find(".next"),
-            tab = $(settings.tab),
-            timer = null,
-            currentIndex = settings.index;
-        tab.eq(currentIndex).addClass('current');
-        ul.css('width',li_w*li_len);
-        if(li_len > settings.minNum){
-            right.click(function(){
-                settings.nextCallback();
-                currentIndex++;
-                if(currentIndex == li_len) {
-                    currentIndex = 0;
-                }
-                tab.removeClass('current').eq(currentIndex).addClass('current');
-                ul.stop().animate({
-                    "left": -(li_w*currentIndex)
-                },{
-                    "duration": 1000,
-                    "easing": "easeOutExpo"
-                });
-            });
-            left.click(function() {
-                currentIndex--;
-                if(currentIndex < 0){
-                    currentIndex = li_len - 1;
-                }
-                tab.removeClass('current').eq(currentIndex).addClass('current');
-                ul.stop().animate({
-                    "left": -(li_w*currentIndex)
-                },{
-                    "duration": 1000,
-                    "easing": "easeOutExpo"
-                });
-                settings.prevCallback();
-            });
-            tab.click(function(){
-                currentIndex = $(this).index(settings.tab);
-                tab.removeClass('current').eq(currentIndex).addClass('current');
-                ul.stop().animate({
-                    "left": -(li_w*currentIndex)
-                },{
-                    "duration": 1000,
-                    "easing": "easeOutExpo"
-                });
-            });
-            if (settings.autoplay) {
-                timer = setInterval(function() {
-                    right.trigger("click");
-                }, settings.time);
-                $wrap.mouseenter(function() {
-                    clearInterval(timer);
-                });
-                $wrap.mouseleave(function() {
-                    clearInterval(timer);
-                    timer = setInterval(function() {
-                        right.trigger("click");
-                    }, settings.time);
-                });
-            }
-        }
-    }
-};
-    */
